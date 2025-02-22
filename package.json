@@ -1,0 +1,12 @@
+{
+    "name": "scraper-service",
+    "version": "1.0.0",
+    "description": "Scraper Service collects and processes external data.",
+    "main": "server.js",
+    "scripts": {
+      "start": "node server.js"
+    },
+    "dependencies": {
+      "express": "^4.21.2"
+    }
+  }
