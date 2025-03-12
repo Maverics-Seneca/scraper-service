@@ -14,9 +14,18 @@ def fetch_sitemap():
     urls = [elem.text for elem in root.findall('.//sitemap:loc', namespaces)]
     return urls
 
-print(len(fetch_sitemap()))
-
-start_url = ''
+def parse_response(resp):
+    tree = html.fromstring(resp.content)
+    title = tree.xpath('//div[@class="cmp-title"]/h1/text()')[0]
+    description = ''.join(tree.xpath('//div[@id="drug-description"]/p/text()'))
+    
+    return {"Name":title, "Description":description}
 
 def main():
-    pass
+    urls = fetch_sitemap()
+    product_page = requests.get(urls[0])
+    if product_page.status_code == 200:
+        product_details = parse_response(product_page)
+        print(product_details)
+
+main()
