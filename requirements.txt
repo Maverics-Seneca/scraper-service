@@ -2,3 +2,6 @@ aiohttp
 lxml
 requests
 pandas
+firebase-admin
+dotenv
+firebase_admin
