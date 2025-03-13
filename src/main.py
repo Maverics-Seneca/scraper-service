@@ -6,6 +6,7 @@ import csv
 import pandas as pd
 import xml.etree.ElementTree as ET
 import requests
+import re
 
 def fetch_sitemap():
     sitemap_response = requests.get('https://www.mayoclinic.org/patient_consumer_drug.xml')
@@ -17,13 +18,14 @@ def fetch_sitemap():
 def parse_response(resp, i):
     tree = html.fromstring(resp)
     title = tree.xpath('//div[@class="cmp-title"]/h1/text()')[0]
+    cleaned_title = re.sub(r'\s*\(.*?\)', '', title).strip()
     description = ''.join(tree.xpath('//div[@id="drug-description"]/p/text()'))
     side_effects_tree = tree.xpath('//div[@id="drug-side-effects"]')[0]
     side_effects_raw = ''.join([etree.tostring(e, encoding='unicode', method='html') for e in side_effects_tree[1:]])
     side_effects = side_effects_tree.xpath('.//li//text()')
 
-
-    data_list.append({"name":title, "description":description, "side_effects":side_effects, "side_effects_raw": side_effects_raw, "url": i})
+    raw_data_list.append({"name": cleaned_title, "name_raw":title, "description":description, "side_effects":side_effects, "side_effects_raw": side_effects_raw, "url": i})
+    clean_data.append({"name":cleaned_title, "description":description, "side_effects":side_effects, "url": i})
 
 def main():
     urls = fetch_sitemap()
@@ -49,8 +51,12 @@ async def main():
                         print({"URL":i, "Exception":e})
                         
 urls = fetch_sitemap()
-data_list = []
+raw_data_list = []
+clean_data = []
 asyncio.run(main())
 
-df2 = pd.DataFrame(data_list)
-df2.to_csv(f"Medicine.csv", index=False, quoting=csv.QUOTE_ALL, encoding="utf-8")
+df1 = pd.DataFrame(clean_data)
+df1.to_csv(f"Medicine.csv", index=False, quoting=csv.QUOTE_ALL, encoding="utf-8")
+
+df2 = pd.DataFrame(raw_data_list)
+df2.to_csv(f"Medicine_Raw.csv", index=False, quoting=csv.QUOTE_ALL, encoding="utf-8")
