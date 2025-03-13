@@ -8,12 +8,37 @@ import xml.etree.ElementTree as ET
 import requests
 import re
 
+headers_sitemap = {
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Sec-Fetch-Site': 'none',
+    'Pragma': 'no-cache',
+    'Sec-Fetch-Dest': 'document',
+    'Cache-Control': 'no-cache',
+    'Sec-Fetch-Mode': 'navigate',
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Safari/605.1.15',
+    'Accept-Language': 'en-CA,en-US;q=0.9,en;q=0.8',
+    'Priority': 'u=0, i',
+}
+
+headers = {
+    'Pragma': 'no-cache',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Sec-Fetch-Site': 'same-origin',
+    'Accept-Language': 'en-CA,en-US;q=0.9,en;q=0.8',
+    'Sec-Fetch-Mode': 'navigate',
+    'Cache-Control': 'no-cache',
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Safari/605.1.15',
+    'Referer': 'https://www.mayoclinic.org/drugs-supplements',
+    'Sec-Fetch-Dest': 'document',
+    'Priority': 'u=0, i',
+}
+
 def fetch_sitemap():
-    sitemap_response = requests.get('https://www.mayoclinic.org/patient_consumer_drug.xml')
+    sitemap_response = requests.get('https://www.mayoclinic.org/patient_consumer_drug.xml', headers=headers_sitemap)
     root = ET.fromstring(sitemap_response.content)
     namespaces = {'sitemap': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
     urls = [elem.text for elem in root.findall('.//sitemap:loc', namespaces)]
-    return urls
+    return list(set(urls))
 
 def parse_response(resp, i):
     tree = html.fromstring(resp)
@@ -38,7 +63,7 @@ async def main():
     async with aiohttp.ClientSession() as session:
         count = 1
         for i in urls:
-            async with session.get(i) as resp:
+            async with session.get(i, headers=headers) as resp:
                 response = await resp.text()
                 print(f"{count}/{len(urls)}")
                 count+=1
