@@ -28,7 +28,9 @@ app.get('/api/medicine/details', async (req, res) => {
 
     try {
         // Call the existing API to get medicines
-        const response = await axios.get(`http://localhost:4002/api/medicine/get?patientId=${patientId}`);
+        const response = await axios.get('http://middleware:3001/medicine/get', {
+            params: { patientId }
+        });
 
         // Extract only medicine names
         const medicineNames = response.data.map(med => med.name);
