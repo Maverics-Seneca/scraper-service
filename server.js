@@ -1,9 +1,12 @@
 // Import required modules
-require('dotenv').config(); // Load environment variables from .env file
 const express = require('express');
+const dotenv = require('dotenv');
 const cors = require('cors'); // Import cors
 const axios = require('axios');
 const admin = require('firebase-admin');
+
+// Load environment variables
+dotenv.config();
 
 // Initialize Express app
 const app = express();
