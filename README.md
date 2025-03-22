@@ -2,19 +2,19 @@
 
 ## Overview
 
-The Scraper Service is a crucial component of our healthcare microservices architecture, designed to fetch and parse drug details from authoritative sources like NHS and CDC. Built with Python and utilizing Cheerio/BeautifulSoup, this service provides robust web scraping capabilities for medication information lookup.
+The Scraper Service is a crucial component of our healthcare microservices architecture, designed to fetch and parse drug details. Built with Python, this service provides robust web scraping capabilities for medication information lookup. This service will use requests module as well as asyncio and aiohttp modules for faster scraping. 
 
 ## Features
 
-- Fetch drug details from NHS and CDC websites
-- Parse HTML content using Cheerio/BeautifulSoup
+- Fetch drug details from pulically available resources
+- Parse HTML content to extract useful information
 - Caching mechanism for improved performance
 - Dockerized for easy deployment and scaling
 
 ## Tech Stack
 
 - Python
-- Cheerio/BeautifulSoup
+- AIOHTTP, Asyncio
 - Docker
 
 ## Project Structure
